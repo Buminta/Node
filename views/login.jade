@@ -1,0 +1,16 @@
+extends main
+
+block header
+	
+
+block content
+	div(class='center-block thumbnail', style='margin-top: 200px; width: 400px; min-height: 200px;')
+		span(class='label label-info') Login
+		form(style='margin-top: 20px; width: 80%; margin-bottom: 20px;', class='center-block', method='GET')
+			input(class='form-control', placeholder='Username', name='username')
+			input(class='form-control', placeholder='Password', name='password', type='password', style='margin-top: 10px;')
+			div(style='text-align: right;')
+				a(class='btn btn-default' href='/register', style='margin-top: 10px; margin-right: 10px;') Register
+				input(class='btn btn-info', type='submit', style='margin-top: 10px;')
+		if(error)
+			span(class='label label-warning center-block') #{error}
