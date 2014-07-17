@@ -1,5 +1,6 @@
-module.exports = {
+module.exports = Controller.extend({
 	init: function(req, res){
+		this._super(req, res);
 		var sess = req.session;
 		if (sess.loginID != undefined) {
 			return res.redirect('/');
@@ -11,9 +12,9 @@ module.exports = {
 				sess.save();
 				return res.redirect('/');
 			}
-			else error = result
+			else error = result;
 		}
-		res.render("login", {title: "Chat real time - login"});
+		this.render("login", {title: "Chat real time - login"});
 	},
 	getUserID: function(username){
 		var result = Usersname.indexOf(username);
@@ -26,4 +27,4 @@ module.exports = {
 		else if(Usersinfo[result].password != md5(password)) return "Password wrong";
 		return true;
 	}
-}
+});

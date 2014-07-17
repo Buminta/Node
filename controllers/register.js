@@ -1,5 +1,6 @@
-module.exports = {
+module.exports = Controller.extend({
 	init: function(req, res){
+		this._super(req, res);
 		var sess = req.session;
 		if (sess.loginID != undefined) {
 			return res.redirect('/');
@@ -11,21 +12,20 @@ module.exports = {
 				if(this.addUser(req.query.username, req.query.password)) return res.redirect('/login');
 			else error = result
 		}
-		res.render("register", {title: "Chat real time - register", error: error});
+		this.render("register", {title: "Chat real time - register", error: error});
 	},
 	addUser: function(user, pass){
 		var md5 = require('MD5');
-		Usersname.push(user);
-		Usersinfo.push({
-			password: md5(pass)
-		});
-		return true;
+		var model = this.newDB('users');
+		model.addUser({username: user, password: md5(pass)});
+		return false;
 	},
 	check: function(vars){
+		var model = this.newDB('users');
 		if(vars.username.length <=0) return "Missing username!";
-		if(Usersname.indexOf(vars.username) != -1) return "Username is used";
+		if(model.findUser(vars.username)) return "Username is used";
 		if(vars.password != vars.cf_password) return "Password wrong!";
 		else if(vars.password.length <= 0) return "Password length >= 1";
 		return true;
 	}
-}
+});

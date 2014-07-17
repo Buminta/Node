@@ -1,6 +1,6 @@
 Chat = {
 	username: undefined,
-	socket: io.connect('http://localhost'),
+	socket: io.connect('http://localhost:3000'),
 	init: function(username){
 		var _self = this;
 		this.socket.on('connect', function(){

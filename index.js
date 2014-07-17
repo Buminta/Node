@@ -1,12 +1,14 @@
 var express = require("express");
 var session = require('express-session');
+var mongo = require('mongojs');
+var db = mongo('localhost:27017');
 
 const KEY = 'express.sid'
   , SECRET = '1234567890QWERTY';
 
 var app = express();
 
-var port = 80;
+var port = 3000;
 var fs = require('fs');
 function include(file_) {
     with (global) {
@@ -14,12 +16,16 @@ function include(file_) {
     };
 };
 
+include(__dirname + '/libs/class.js');
+include(__dirname + '/libs/controller.js');
+include(__dirname + '/libs/model.js');
+
 app.use(express.static(__dirname + '/public'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 app.use(session({secret: SECRET})); 
-
-
-Usersname = [];
-Usersinfo = [];
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
 
 
 var controllerFolder = "/controllers/";
@@ -30,13 +36,13 @@ app.engine(	'jade', require('jade').__express);
 
 app.get(["/", "/:controller"], function(req, res){
 	var controller = req.param('controller');
-	controller = controller.replace("/", "");
+	
 	if(controller == undefined || controller == ""){
 		controller = "home";
 	}
 	try{
 		var classController = require(__dirname + controllerFolder + controller +".js");
-		return classController.init(req, res);
+		return new classController(req, res);
 	}
 	catch(err){
 		console.log(err);
