@@ -1,15 +1,15 @@
 module.exports = Model.extend({
 	init: function(db){
 		this._super(db);
-		this.collection = 'nodechat_users';
+		this.collection = 'users';
 	},
 	addUser: function(configs){
 		var collection = this.getData();
-		collection.insert(configs);
-		return true;
+		return collection.insert(configs, {saved: true}, function(err, results){
+			console.log(results);
+		});
 	},
 	findUser: function(user, password){
-		return false;
 		var collection = this.getData();
 		if(!password){
 			return collection.find({username: user});
@@ -17,5 +17,11 @@ module.exports = Model.extend({
 		else{
 			return collection.find({username: user, password: password});
 		}
+	},
+	updateUser: function(configs){
+
+	},
+	deleteUser: function(id){
+		
 	}
 });
