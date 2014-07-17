@@ -2,29 +2,43 @@ module.exports = Controller.extend({
 	init: function(req, res){
 		this._super(req, res);
 		var sess = req.session;
+		var _self = this;
 		if (sess.loginID != undefined) {
 			return res.redirect('/');
 		}
-		if(req.query.username != undefined){
-			var result = this.check(req.query.username, req.query.password);
-			if(result === true){
-				sess.loginID = this.getUserID(req.query.username);
-				sess.save();
-				return res.redirect('/');
-			}
-			else error = result;
+		if(req.body.username != undefined){
+			this.check(req.body.username, req.body.password, function(result){
+				if(result === true){
+					_self.getUserID(req.body.username, function(id){
+						sess.loginID = id;
+						sess.username = req.body.username;
+						sess.save();
+						return res.redirect('/');
+					});
+				}
+				else{
+					error = result;
+					_self.render("login", {title: "Chat real time - login", error: error});
+				}
+			});
 		}
-		this.render("login", {title: "Chat real time - login"});
+		else{
+			this.render("login", {title: "Chat real time - login"});
+		}
 	},
-	getUserID: function(username){
-		var result = Usersname.indexOf(username);
-		return result;
+	getUserID: function(username, callback){
+		var model = this.newDB("users");
+		model.findUser(username).toArray(function(err, result){
+			callback(result[0]._id);
+		});
 	},
-	check: function(username, password){
+	check: function(username, password, callback){
 		var md5 = require('MD5');
-		var result = Usersname.indexOf(username);
-		if(result == -1) return "Username wrong";
-		else if(Usersinfo[result].password != md5(password)) return "Password wrong";
+		var model = this.newDB("users");
+		model.findUser(username, md5(password)).count(function(err, result){
+			if(!result) callback("Username or password wrong");
+			else callback(true);
+		});
 		return true;
 	}
 });

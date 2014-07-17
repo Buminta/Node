@@ -4,7 +4,7 @@ Controller = Class.extend({
 		this.req = req;
 	},
 	render: function(template, configs){
-		this.res.render(template, configs);
+		return this.res.render(template, configs);
 	},
 	newDB: function(name){
 		var model = require(__dirname + "/models/" + name +".js");

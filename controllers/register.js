@@ -6,26 +6,39 @@ module.exports = Controller.extend({
 			return res.redirect('/');
 		}
 		error = false;
-		if(req.query.username != undefined){
-			var result = this.check(req.query);
-			if(result === true)
-				if(this.addUser(req.query.username, req.query.password)) return res.redirect('/login');
-			else error = result
+		var _self = this;
+		if(req.body.username != undefined){
+			_self.check(req.body, function(result){
+				if(result === true){
+					_self.addUser(req.body.username, req.body.password);
+					return res.redirect('/login');
+				}
+				else{
+					error = result;
+					return _self.render("register", {title: "Chat real time - register", error: error});
+				}
+			});
 		}
-		this.render("register", {title: "Chat real time - register", error: error});
+		else{
+			return _self.render("register", {title: "Chat real time - register", error: error});
+		}
 	},
 	addUser: function(user, pass){
 		var md5 = require('MD5');
 		var model = this.newDB('users');
-		model.addUser({username: user, password: md5(pass)});
-		return false;
+		return model.addUser({username: user, password: md5(pass)});
 	},
-	check: function(vars){
+	check: function(vars, callback){
+		var msg = false;
+		if(vars.username.length <=0) msg = "Missing username!";
+		else if(vars.password != vars.cf_password) msg = "Password wrong!";
+		else if(vars.password.length <= 0) msg = "Password length >= 1";
 		var model = this.newDB('users');
-		if(vars.username.length <=0) return "Missing username!";
-		if(model.findUser(vars.username)) return "Username is used";
-		if(vars.password != vars.cf_password) return "Password wrong!";
-		else if(vars.password.length <= 0) return "Password length >= 1";
+		model.findUser(vars.username).count(function(err, result){
+			if(result) msg =  "Username is used";
+			else msg = true;
+			callback(msg);
+		});
 		return true;
 	}
 });

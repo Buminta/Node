@@ -3,6 +3,6 @@ Model = Class.extend({
 		this.db = db;
 	},
 	getData: function(){
-		return this.db[this.collection];
+		return this.db.collection(this.collection);
 	}
 });

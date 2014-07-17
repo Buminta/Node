@@ -1,7 +1,11 @@
 var express = require("express");
 var session = require('express-session');
-var mongo = require('mongojs');
-var db = mongo('localhost:27017');
+var mongo = require('mongodb'),
+  Server = mongo.Server,
+  Db = mongo.Db;
+
+var server = new Server('127.0.0.1', 27017, {auto_reconnect: true});
+var db = new Db('chatnode', server, {safe:false});
 
 const KEY = 'express.sid'
   , SECRET = '1234567890QWERTY';
@@ -16,15 +20,20 @@ function include(file_) {
     };
 };
 
+db.open(function(err, db) {
+	db = db;
+});
+
 include(__dirname + '/libs/class.js');
 include(__dirname + '/libs/controller.js');
 include(__dirname + '/libs/model.js');
 
-app.use(express.static(__dirname + '/public'));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-app.use(session({secret: SECRET})); 
+app.use(express.static(__dirname + '/public'));
+app.use(express.bodyParser());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+app.use(session({secret: SECRET}));
 app.use(function(req,res,next){
-    req.db = db;
-    next();
+	req.db = db;
+   	next();
 });
 
 
@@ -34,10 +43,10 @@ app.set('views', __dirname + '/views');
 app.set('view engine', "jade");
 app.engine(	'jade', require('jade').__express);
 
-app.get(["/", "/:controller"], function(req, res){
+app.all(["/", "/:controller"], function(req, res){
 	var controller = req.param('controller');
 	
-	if(controller == undefined || controller == ""){
+	if(controller == undefined || controller == "/" || controller == ""){
 		controller = "home";
 	}
 	try{
