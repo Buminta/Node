@@ -1,14 +1,19 @@
 var express = require("express");
-var session = require('express-session');
 var mongo = require('mongodb'),
   Server = mongo.Server,
   Db = mongo.Db;
+
+
 
 var server = new Server('127.0.0.1', 27017, {auto_reconnect: true});
 var db = new Db('chatnode', server, {safe:false});
 
 const KEY = 'express.sid'
   , SECRET = '1234567890QWERTY';
+
+var parseCookie = express.cookieParser(SECRET);
+var MemoryStore = express.session.MemoryStore;
+var store = new MemoryStore();
 
 var app = express();
 
@@ -30,7 +35,10 @@ include(__dirname + '/libs/model.js');
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-app.use(session({secret: SECRET}));
+app.configure(function () {
+    app.use(express.cookieParser());
+    app.use(express.session({store: store, secret: SECRET, key: KEY}));
+});
 app.use(function(req,res,next){
 	req.db = db;
    	next();
@@ -61,31 +69,64 @@ app.all(["/", "/:controller"], function(req, res){
 
 var io = require('socket.io').listen(app.listen(port));
 
+
+io.set('authorization', function(handshake, callback) {
+	if (handshake.headers.cookie) {
+    	parseSession(handshake, function(config){
+    		if(config){
+    			callback(null, true);
+    		}
+    		else{
+    			callback("Not session.", false);
+    		}
+    	});
+	} else {
+    	return callback('No session.', false);
+	}
+});
+
+function parseSession(handshake, callback){
+	parseCookie(handshake, null, function(err) {
+    	handshake.sessionID = handshake.signedCookies[KEY];
+    	store.get(handshake.sessionID, function (err, session) {
+	    	if (err || !session) {
+	    		callback(false);
+	        } else {
+	        	callback(session);
+	        }
+	    });	
+	});
+}
+
 var rooms = ['Begining'];
 
 io.sockets.on('connection', function (socket) {
-	socket.username = "No name";
+	var hs = socket.handshake;
 	socket.on('addroom', function(data){
-		var newroom = "Room by "+ socket.username;
-		if (rooms.indexOf(newroom) == -1) rooms.push(newroom);
-		io.sockets.emit('updaterooms', rooms, socket.room);
+		parseSession(hs, function(session){
+			var newroom = "Room by "+ session.username;
+			if (rooms.indexOf(newroom) == -1) rooms.push(newroom);
+			io.sockets.emit('updaterooms', rooms, socket.room);
+		})
 	});
 
 	socket.on('sendchat', function (data) {
-		io.sockets.in(socket.room).emit('updatechat', socket.username, data);
+		parseSession(hs, function(session){
+			io.sockets.in(socket.room).emit('updatechat', session.username, data);
+		});
 	});
 	
-	socket.on('switchRoom', function(username, newroom){
-		socket.username = username;
-		socket.leave(socket.room);
-		socket.join(newroom);
-		socket.emit('updatechat', 'SERVER', {msg: 'you have connected to '+ newroom});
-		socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', {msg: socket.username+' has left this room'});
-		socket.room = newroom;
-		socket.broadcast.to(newroom).emit('updatechat', 'SERVER', {msg: socket.username+' has joined this room'});
-		socket.emit('updaterooms', rooms, newroom);
+	socket.on('switchRoom', function(newroom){
+		parseSession(hs, function(session){
+			socket.leave(socket.room);
+			socket.join(newroom);
+			socket.emit('updatechat', 'SERVER', {msg: 'you have connected to '+ newroom});
+			socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', {msg: session.username+' has left this room'});
+			socket.room = newroom;
+			socket.broadcast.to(newroom).emit('updatechat', 'SERVER', {msg: session.username+' has joined this room'});
+			socket.emit('updaterooms', rooms, newroom);
+		});
 	});
-	socket.on('disconnect', function(){
-		
-	});
+    socket.on('disconnect', function () {
+    });
 });

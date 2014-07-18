@@ -1,14 +1,12 @@
 Chat = {
-	username: undefined,
 	socket: io.connect('http://localhost:3000'),
-	init: function(username){
+	init: function(){
 		var _self = this;
 		this.socket.on('connect', function(){
 			_self.updateRoom();
 			_self.updateChat();
 			_self.switchRoom("Begining");
 		});
-		this.username = username;
 	},
 	updateRoom: function(){
 		this.socket.on('updaterooms', function(rooms, current_room) {
@@ -25,7 +23,7 @@ Chat = {
 	},
 	switchRoom: function(room){
 		$('#content').html('');
-		this.socket.emit('switchRoom', this.username, room);
+		this.socket.emit('switchRoom', room);
 	},
 	updateChat: function(){
 		this.socket.on('updatechat', function (username, data) {

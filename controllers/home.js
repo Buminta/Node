@@ -5,6 +5,6 @@ module.exports = Controller.extend({
 		if (sess.loginID == undefined) {
 			return res.redirect('/login');
 		}
-		this.render("home", {title: "Chat real time", username: sess.username});
+		this.render("home", {title: "Chat real time"});
 	}
 });
