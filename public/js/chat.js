@@ -7,6 +7,10 @@ Chat = {
 			_self.updateRoom();
 			_self.updateChat();
 		});
+		this.socket.on('disconnect', function () {
+		   console.log('disconnect client event....');
+		   window.location.reload();
+		});
 	},
 	updateRoom: function(){
 		$('#content').html('');
