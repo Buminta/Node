@@ -1,29 +1,40 @@
 Chat = {
+	server: 'http://localhost:3000',
 	socket: io.connect('http://localhost:3000'),
 	init: function(){
 		var _self = this;
 		this.socket.on('connect', function(){
 			_self.updateRoom();
 			_self.updateChat();
-			_self.switchRoom("Begining");
 		});
 	},
 	updateRoom: function(){
-		this.socket.on('updaterooms', function(rooms, current_room) {
+		$('#content').html('');
+		this.socket.on('updaterooms', function(rooms, current_room, msgs) {
 			$('#rooms').empty();
 			$.each(rooms, function(key, value) {
-				if(value == current_room){
-					$('#rooms').append('<div>' + value + '</div>');
+				if(value.name == current_room){
+					$('#rooms').append('<div>' + value.name + '</div>');
 				}
 				else {
-					$('#rooms').append('<div><a href="#" onclick="Chat.switchRoom(\''+value+'\')">' + value + '</a></div>');
+					$('#rooms').append('<div><a href="#" onclick="Chat.switchRoom(\''+value.name+'\')">' + value.name + '</a></div>');
 				}
 			});
+			if(msgs){
+				$.each(msgs, function(key, value) {
+					$('#content').append('<b>'+value.username + ':</b> <span style="color: '+value.msg.color+'; font-weight: '+value.msg.style+'">' + value.msg.msg + '</span><br>');
+				});
+			}
 		});
 	},
 	switchRoom: function(room){
 		$('#content').html('');
 		this.socket.emit('switchRoom', room);
+		$.ajax({
+			url: this.server+'/saveroom',
+			type: 'post',
+			data: {room: room}
+		});
 	},
 	updateChat: function(){
 		this.socket.on('updatechat', function (username, data) {
