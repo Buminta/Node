@@ -10,9 +10,20 @@ module.exports = Model.extend({
 			if (callback) callback();
 		});
 	},
-	findRoom: function(room, callback){
+	findRoom: function(room, callback, find_for_name){
 		var collection = this.getData();
-		if (room){
+		var ObjectId = require('mongoose').Types.ObjectId;
+		if (room && !find_for_name){
+			try{
+				collection.find({_id: new ObjectId(room)}).toArray(function(err, results){
+					callback(results[0]);
+				});
+			}
+			catch(error){
+				callback({name: "Begining"});
+			}
+		}
+		else if(room && find_for_name){
 			collection.find({name: room}).toArray(function(err, results){
 				callback(results[0]);
 			});
@@ -25,11 +36,11 @@ module.exports = Model.extend({
 	},
 	updateMSGRoom: function(room, msg){
 		var collection = this.getData();
-		collection.find({name: room}).toArray(function(err, results){
+		collection.find({_id: room}).toArray(function(err, results){
 			if(!err && results[0]){
 				var msgs = results[0].msgs;
 				msgs = msgs.concat(msg);
-				collection.update({name: room},{$set:{msgs: msgs}},function(err, results){
+				collection.update({_id: room},{$set:{msgs: msgs}},function(err, results){
 				});
 			}
 		});

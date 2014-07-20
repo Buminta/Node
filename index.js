@@ -32,6 +32,7 @@ db.open(function(err, db) {
 include(__dirname + '/libs/class.js');
 include(__dirname + '/libs/controller.js');
 include(__dirname + '/libs/model.js');
+include(__dirname + '/libs/auth.js');
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
@@ -62,7 +63,7 @@ app.all(["/", "/:controller"], function(req, res){
 		return new classController(req, res);
 	}
 	catch(err){
-		console.log(err);
+		console.log(err.message, err.stack);
 		res.render("error", {code: "404"});
 	}
 });
@@ -108,7 +109,7 @@ io.sockets.on('connection', function (socket) {
 		}
 		socket.room = session.room;
 		roomModel.findRoom(null, function(rooms){
-			rooms = [{name: "Begining", msgs: []}].concat(rooms);
+			rooms = [{_id: "Begining", name: "Begining", msgs: []}].concat(rooms);
 			roomModel.findRoom(socket.room, function(room){
 				var msgs = null;
 				if(room) msgs = room.msgs;
@@ -129,7 +130,7 @@ io.sockets.on('connection', function (socket) {
 						io.sockets.emit('updaterooms', rooms, socket.room);
 					});
 				}
-			});
+			}, true);
 		});
 
 		socket.on('sendchat', function (data) {
@@ -140,12 +141,19 @@ io.sockets.on('connection', function (socket) {
 		socket.on('switchRoom', function(newroom){
 			socket.leave(socket.room);
 			socket.join(newroom);
-			socket.emit('updatechat', 'SERVER', {msg: 'you have connected to '+ newroom});
+			roomModel.findRoom(newroom, function(room){
+				if(room){
+					socket.emit('updatechat', 'SERVER', {msg: 'you have connected to '+ room.name});
+				}
+				else{
+					socket.emit('updatechat', 'SERVER', {msg: 'Not find room'});
+				}
+			});
 			socket.broadcast.to(socket.room).emit('updatechat', 'SERVER', {msg: session.username+' has left this room'});
 			socket.room = newroom;
 			socket.broadcast.to(newroom).emit('updatechat', 'SERVER', {msg: session.username+' has joined this room'});
 			roomModel.findRoom(null, function(rooms){
-				rooms = [{name: "Begining", msgs: []}].concat(rooms);
+				rooms = [{_id: "Begining",name: "Begining", msgs: []}].concat(rooms);
 				roomModel.findRoom(socket.room, function(room){
 					var msgs = null;
 					if(room) msgs = room.msgs;

@@ -13,6 +13,7 @@ module.exports = Controller.extend({
 						sess.loginID = id;
 						sess.username = req.body.username;
 						sess.save();
+						if(_self.req.query.goback) return res.redirect(_self.req.query.goback);
 						return res.redirect('/');
 					});
 				}

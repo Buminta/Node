@@ -10,7 +10,17 @@ module.exports = Model.extend({
 		});
 	},
 	findPermission: function(group, callback){
-		return callback(collection.find({group: group}));
+		var collection = this.getData();
+		return callback(collection.find({group: group}).toArray(function(err, results){
+			callback(results);
+		}));
+	},
+	checkPermission: function(group, configs, callback){
+		var collection = this.getData();
+		return collection.find({group: group, controller: configs.controller, action: configs.action}).toArray(function(err, results){
+			if(results.length > 0) callback(true);
+			else callback(false);
+		});
 	},
 	updatePermission: function(configs){
 

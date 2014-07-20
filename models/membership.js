@@ -10,7 +10,10 @@ module.exports = Model.extend({
 		});
 	},
 	findMembership: function(user, callback){
-		return callback(collection.find({user: user}));
+		var collection = this.getData();
+		return collection.find({user_id: user}).toArray(function(err, results){
+			callback(results);
+		});
 	},
 	deleteMembership: function(id){
 		

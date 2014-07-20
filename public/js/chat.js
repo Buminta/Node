@@ -17,11 +17,11 @@ Chat = {
 		this.socket.on('updaterooms', function(rooms, current_room, msgs) {
 			$('#rooms').empty();
 			$.each(rooms, function(key, value) {
-				if(value.name == current_room){
+				if(value._id == current_room){
 					$('#rooms').append('<div>' + value.name + '</div>');
 				}
 				else {
-					$('#rooms').append('<div><a href="#" onclick="Chat.switchRoom(\''+value.name+'\')">' + value.name + '</a></div>');
+					$('#rooms').append('<div><a href="#" onclick="Chat.switchRoom(\''+value._id+'\')">' + value.name + '</a></div>');
 				}
 			});
 			if(msgs){
