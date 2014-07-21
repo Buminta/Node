@@ -1,10 +1,12 @@
 module.exports = Controller.extend({
 	init: function(req, res){
 		this._super(req, res);
-		var sess = req.session;
+	},
+	index: function(){
+		var sess = this.req.session;
 		var _self = this;
-		if(req.body.room != undefined){
-			sess.room = req.body.room
+		if(_self.req.body.room != undefined){
+			sess.room = _self.req.body.room
 			sess.save();
 		}
 		this.render("content", {content: "OK"});

@@ -11,13 +11,13 @@ module.exports = Model.extend({
 	},
 	findPermission: function(group, callback){
 		var collection = this.getData();
-		return callback(collection.find({group: group}).toArray(function(err, results){
-			callback(results);
-		}));
+		return collection.find({group_id: group}).toArray(function(err, results){
+			return callback(results);
+		});
 	},
 	checkPermission: function(group, configs, callback){
 		var collection = this.getData();
-		return collection.find({group: group, controller: configs.controller, action: configs.action}).toArray(function(err, results){
+		return collection.find({group_id: group, controller: configs.controller, action: configs.action}).toArray(function(err, results){
 			if(results.length > 0) callback(true);
 			else callback(false);
 		});

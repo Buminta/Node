@@ -1,20 +1,22 @@
 module.exports = Controller.extend({
 	init: function(req, res){
 		this._super(req, res);
-		var sess = req.session;
+	},
+	index: function(){
+		var sess = this.req.session;
 		var _self = this;
 		if (sess.loginID != undefined) {
-			return res.redirect('/');
+			return _self.res.redirect('/');
 		}
-		if(req.body.username != undefined){
-			this.check(req.body.username, req.body.password, function(result){
+		if(_self.req.body.username != undefined){
+			this.check(_self.req.body.username, _self.req.body.password, function(result){
 				if(result === true){
-					_self.getUserID(req.body.username, function(id){
+					_self.getUserID(_self.req.body.username, function(id){
 						sess.loginID = id;
-						sess.username = req.body.username;
+						sess.username = _self.req.body.username;
 						sess.save();
-						if(_self.req.query.goback) return res.redirect(_self.req.query.goback);
-						return res.redirect('/');
+						if(_self.req.query.goback) return _self.res.redirect(_self.req.query.goback);
+						return _self.res.redirect('/');
 					});
 				}
 				else{

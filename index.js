@@ -52,21 +52,71 @@ app.set('views', __dirname + '/views');
 app.set('view engine', "jade");
 app.engine(	'jade', require('jade').__express);
 
-app.all(["/", "/:controller"], function(req, res){
-	var controller = req.param('controller');
-	
-	if(controller == undefined || controller == "/" || controller == ""){
-		controller = "home";
-	}
+app.all("/", function(req, res){
+	controller = "home";
 	try{
 		var classController = require(__dirname + controllerFolder + controller +".js");
-		return new classController(req, res);
+		var control = new classController(req, res);
+		return control.index();
 	}
 	catch(err){
 		console.log(err.message, err.stack);
 		res.render("error", {code: "404"});
 	}
 });
+
+app.all("/:controller", function(req, res){
+	var controller = req.params.controller;
+	if(controller == undefined || controller == "/" || controller == ""){
+		controller = "home";
+	}
+	try{
+		var classController = require(__dirname + controllerFolder + controller +".js");
+		var control = new classController(req, res);
+		return control.index();
+	}
+	catch(err){
+		console.log(err.message, err.stack);
+		res.render("error", {code: "404"});
+	}
+});
+
+app.all("/:controller/:action", function(req, res){
+	var controller = req.params.controller;
+	var action = req.params.action;
+	
+	if(controller == undefined || controller == "/" || controller == ""){
+		controller = "home";
+	}
+	try{
+		var classController = require(__dirname + controllerFolder + controller +".js");
+		var control = new classController(req, res);
+		return control[action]();
+	}
+	catch(err){
+		console.log(err.message, err.stack);
+		res.render("error", {code: "404"});
+	}
+});
+
+app.all("/:controller/:action/:id", function(req, res){
+	var controller = req.params.controller;
+	var action = req.params.action;
+	
+	if(controller == undefined || controller == "/" || controller == ""){
+		controller = "home";
+	}
+	try{
+		var classController = require(__dirname + controllerFolder + controller +".js");
+		var control = new classController(req, res);
+		return control[action]();
+	}
+	catch(err){
+		console.log(err.message, err.stack);
+		res.render("error", {code: "404"});
+	}
+});
+
 
 var io = require('socket.io').listen(app.listen(port));
 

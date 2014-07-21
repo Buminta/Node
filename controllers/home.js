@@ -1,9 +1,11 @@
 module.exports = Controller.extend({
 	init: function(req, res){
 		this._super(req, res);
-		var sess = req.session;
+	},
+	index: function(){
+		var sess = this.req.session;
 		if (sess.loginID == undefined) {
-			return res.redirect('/login');
+			return this.res.redirect('/login');
 		}
 		this.render("home", {title: "Chat real time"});
 	}

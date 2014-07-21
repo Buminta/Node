@@ -1,6 +1,12 @@
 extends main
 
 block header
-	
 
 block content
+	nav(class='navbar navbar-default', role='navigation')
+		div(class='container-fluid')
+			div(class="collapse navbar-collapse")
+				ul(class='nav navbar-nav')
+					- for(var i=0; i<menu.length; i++)
+						li
+							a(href='/#{menu[i].controller}/#{menu[i].action}') #{menu[i].name}
