@@ -14,7 +14,8 @@ Chat = {
 	},
 	updateRoom: function(){
 		$('#content').html('');
-		this.socket.on('updaterooms', function(rooms, current_room, msgs) {
+		this.socket.on('updaterooms', function(rooms, current_room, msgs, roomadd_valid) {
+			if(roomadd_valid) Notification.show("Room is created!");
 			$('#rooms').empty();
 			$.each(rooms, function(key, value) {
 				if(value._id == current_room){

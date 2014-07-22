@@ -35,16 +35,21 @@ module.exports = Model.extend({
 		}
 	},
 	updateMSGRoom: function(room, msg){
-		var collection = this.getData();
-		collection.find({_id: room}).toArray(function(err, results){
-			if(!err && results[0]){
-				var msgs = results[0].msgs;
-				msgs = msgs.concat(msg);
-				collection.update({_id: room},{$set:{msgs: msgs}},function(err, results){
-				});
-			}
-		});
-		
+		try{
+			var ObjectId = require('mongoose').Types.ObjectId;
+			var collection = this.getData();
+			collection.find({_id: new ObjectId(room)}).toArray(function(err, results){
+				if(!err && results[0]){
+					var msgs = results[0].msgs;
+					msgs = msgs.concat(msg);
+					collection.update({_id:  new ObjectId(room)},{$set:{msgs: msgs}},function(err, results){
+					});
+				}
+			});
+		}
+		catch(err){
+			
+		}
 	},
 	deleteRoom: function(id){
 		

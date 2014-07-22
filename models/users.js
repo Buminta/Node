@@ -18,6 +18,12 @@ module.exports = Model.extend({
 			return collection.find({username: user, password: password});
 		}
 	},
+	getAllUser: function(callback){
+		var collection = this.getData();
+		return collection.find().toArray(function(err, results){
+			callback(results);
+		});
+	},
 	updateUser: function(configs){
 
 	},

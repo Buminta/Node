@@ -9,7 +9,11 @@ html(lang="en")
 		script(src='/js/bootstrap.min.js')
 		block header
 	body(style="background: #ccc;")
-		div(id="NotificationJS", style="display: none;")
+		nav(class='navbar navbar-default', role='navigation')
+			div(class='container-fluid')
+				div(class="collapse navbar-collapse")
+					ul(class='nav navbar-nav')
+						- for(var i=0; i<menu.length; i++)
+							li
+								a(href='/#{menu[i].controller}/#{menu[i].action}') #{menu[i].name}
 		block content
-
-	script(src='/js/notification.js')

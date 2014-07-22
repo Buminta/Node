@@ -84,6 +84,7 @@ app.all("/:controller", function(req, res){
 app.all("/:controller/:action", function(req, res){
 	var controller = req.params.controller;
 	var action = req.params.action;
+	console.log(controller, action);
 	
 	if(controller == undefined || controller == "/" || controller == ""){
 		controller = "home";
@@ -158,6 +159,7 @@ io.sockets.on('connection', function (socket) {
 			session.room = "Begining";
 		}
 		socket.room = session.room;
+		socket.join(socket.room);
 		roomModel.findRoom(null, function(rooms){
 			rooms = [{_id: "Begining", name: "Begining", msgs: []}].concat(rooms);
 			roomModel.findRoom(socket.room, function(room){
@@ -171,13 +173,13 @@ io.sockets.on('connection', function (socket) {
 			roomModel.findRoom(newroom, function(rooms){
 				if (!rooms) {
 					roomModel.addRoom({name: newroom, msgs: []}, function(){
-						io.sockets.emit('updaterooms', rooms, socket.room);
+						io.sockets.emit('updaterooms', rooms, socket.room, [], false);
 					});
 				}
 				else{
 					roomModel.findRoom(null, function(rooms){
-						rooms = [{name: "Begining", msgs: []}].concat(rooms);
-						io.sockets.emit('updaterooms', rooms, socket.room);
+						rooms = [{_id: "Begining", name: "Begining", msgs: []}].concat(rooms);
+						io.sockets.emit('updaterooms', rooms, socket.room, [], true);
 					});
 				}
 			}, true);

@@ -19,5 +19,27 @@ module.exports = Controller.extend({
 			}
 			else return _self.res.redirect("/error");
 		});
+	},
+	managerusers: function(){
+		var _self = this;
+		var auth = new Auth(this.req, this.res);
+		return auth.permission('admin', 'managerusers', function(results){
+			if(results){
+				return _self.render("admin_managerusers", {title: "Chat real time - admin", menu: _self.menu});
+			}
+			else return _self.res.redirect("/error");
+		});
+	},
+	managerrooms: function(){
+		var _self = this;
+		var auth = new Auth(this.req, this.res);
+		return auth.permission('admin', 'managerrooms', function(results){
+			if(results){
+				var model = this.newDB("users");
+				model.getAllUser
+				return _self.render("admin_managerrooms", {title: "Chat real time - admin", menu: _self.menu});
+			}
+			else return _self.res.redirect("/error");
+		});
 	}
 });

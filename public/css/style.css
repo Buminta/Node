@@ -1,0 +1,103 @@
+.notification{
+    z-index: 99;
+    position: fixed;
+    top: 55px;
+    line-height: 20px;
+    right: 10px;
+    border-radius: 5px;
+    background: #393939;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-animation-name: bounce;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-duration: 1000ms;
+    -moz-animation-name: bounce;
+    -moz-animation-timing-function: ease-in-out;
+    -moz-animation-duration: 1000ms;
+    animation-name: bounce;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1000ms;
+}
+@-webkit-keyframes bounce{
+    0%{
+        -webkit-transform: translate3d(0px,-200px,0px);
+    }
+    25%{
+        -webkit-transform: translate3d(0px,-20px,0px);
+    }
+    40%{
+        -webkit-transform: translate3d(0px,0px,0px);
+    }
+    55%{
+        -webkit-transform: translate3d(0px,-10px,0px);
+    }
+    70%{
+        -webkit-transform: translate3d(0px,0px,0px);
+    }
+    85%{
+        -webkit-transform: translate3d(0px,-5px,0px);
+    }
+    100%{
+        -webkit-transform: translate3d(0px,0px,0px);
+    }
+}
+@-moz-keyframes bounce{
+    0%{
+        -moz-transform: translate3d(0px,-200px,0px);
+    }
+    25%{
+        -moz-transform: translate3d(0px,-20px,0px);
+    }
+    40%{
+        -moz-transform: translate3d(0px,0px,0px);
+    }
+    55%{
+        -moz-transform: translate3d(0px,-10px,0px);
+    }
+    70%{
+        -moz-transform: translate3d(0px,0px,0px);
+    }
+    85%{
+        -moz-transform: translate3d(0px,-5px,0px);
+    }
+    100%{
+        -moz-transform: translate3d(0px,0px,0px);
+    }
+}
+@keyframes bounce{
+    0%{
+        transform: translate3d(0px,-200px,0px);
+    }
+    25%{
+        transform: translate3d(0px,-20px,0px);
+    }
+    40%{
+        transform: translate3d(0px,0px,0px);
+    }
+    55%{
+        transform: translate3d(0px,-10px,0px);
+    }
+    70%{
+        transform: translate3d(0px,0px,0px);
+    }
+    85%{
+        transform: translate3d(0px,-5px,0px);
+    }
+    100%{
+        transform: translate3d(0px,0px,0px);
+    }
+}
+.notification .close{
+    float: right;
+    margin-left: 20px;
+    margin-right: 0px;
+    margin-top: 2px;
+    font-size: 10px;
+}
+.notification:hover{
+    opacity: 0.5;
+}
