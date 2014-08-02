@@ -186,8 +186,13 @@ io.sockets.on('connection', function (socket) {
 		});
 
 		socket.on('sendchat', function (data) {
-			io.sockets.in(socket.room).emit('updatechat', session.username, data);
-			roomModel.updateMSGRoom(socket.room, {username: session.username, msg: data});
+			var tmp = require(__dirname + "/models/filter.js");
+			var filterModel = new tmp(db);
+			filterModel.replaceWord(data.msg, function(msg){
+				data.msg = msg;
+				io.sockets.in(socket.room).emit('updatechat', session.username, data);
+				roomModel.updateMSGRoom(socket.room, {username: session.username, msg: data});
+			});
 		});
 		
 		socket.on('switchRoom', function(newroom){

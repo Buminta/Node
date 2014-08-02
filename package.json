@@ -1,11 +1,11 @@
 {
   "name": "Chat",
-  "description": "Chat real time with MVC NodeJS + Express + Jade",
+  "description": "Chat realtime",
   "version": "1.0.0",
   "author": "Tan Bui (http://buminta.com)",
   "repository" : {
     "type" : "git",
-    "url" : "https://github.com/buminta/Node.git"
+    "url" : "https://github.com/Buminta/Node.git"
   },
   "dependencies": {
     "express": "3.x",
@@ -13,7 +13,8 @@
     "socket.io": "latest",
     "jade": "latest",
     "connect": "latest",
-    "mongodb": "latest"
+    "mongodb": "latest",
+    "mongoese": "latest"
   },
   "engines": {
     "node": "0.10.x",

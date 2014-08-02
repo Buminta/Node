@@ -3,4 +3,7 @@ extends layout_admin
 block header
 
 block content
-	
+	div(class='center-border')
+		div(class='center-block-menu thumbnail')
+			- for(var i=0; i<menu.length; i++)
+				a(class='btn btn-default', href='/#{menu[i].controller}/#{menu[i].action}') #{menu[i].name}

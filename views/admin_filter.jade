@@ -1,0 +1,20 @@
+extends layout_admin
+
+block header
+
+block content
+	div(class='center-border')
+		form(class='thumbnail form-room')
+			input(class='form-control', name='new_filter')
+			input(class='btn btn-info space pull-right', type='submit', value='Add word')
+		table(class='table table-striped thumbnail table-center')
+			thead
+				tr()
+					th() Word
+					th() Control
+			tbody
+				- for(var i=0; i<list.length; i++)
+					tr()
+						td() #{list[i].word}
+						td()
+							button(class='btn btn-default' onclick='javascript:if(confirm("Delete confirm?")) window.location.href="?delete=#{list[i]._id}";') Delete

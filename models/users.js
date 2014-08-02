@@ -25,9 +25,14 @@ module.exports = Model.extend({
 		});
 	},
 	updateUser: function(configs){
-
+		var ObjectId = require('mongoose').Types.ObjectId;
+		var collection = this.getData();
+		collection.update({_id:  new ObjectId(configs.id)},{$set:{password: configs.password}},function(err, results){
+		});
 	},
 	deleteUser: function(id){
-		
+		var collection = this.getData();
+		var ObjectId = require('mongoose').Types.ObjectId;
+		return collection.remove({_id: new ObjectId(id)});
 	}
 });

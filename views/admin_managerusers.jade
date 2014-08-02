@@ -3,4 +3,49 @@ extends layout_admin
 block header
 
 block content
-	
+	div(class='center-border')
+		table(class='table table-striped thumbnail table-center')
+			thead
+				tr()
+					th() Username
+					th() Password
+					th() Control
+			tbody
+				- for(var i=0; i<list.length; i++)
+					tr()
+						td() #{list[i].username}
+						td()
+							button(class='btn btn-default', data-toggle="modal", data-target="#myModal", onclick="javascript:setUser('#{list[i]._id}');") Reset
+						td()
+							button(class='btn btn-default' onclick='javascript:if(confirm("Delete confirm?")) window.location.href="?delete=#{list[i]._id}";') Delete
+	div(class="modal fade", id="myModal", tabindex="-1", role="dialog", aria-labelledby="myModalLabel", aria-hidden="true")
+		div(class="modal-dialog")
+			form(class="modal-content", action="javascript:changPass($('input[name=password]').val(), $('input[name=confirm_password]').val())")
+				div(class="modal-header")
+					button(type="button", class="close", data-dismiss="modal")
+						span(aria-hidden="true") &times;
+						span(class="sr-only") Close
+					h4(class="modal-title", id="myModalLabel") Modal title
+				div(class="modal-body")
+						input(class='form-control space', name='password', placeholder="New Password", type="password")
+						input(class='form-control space', name='confirm_password', placeholder="Confirm Password", type="password")
+				div(class="modal-footer")
+					a(class="btn btn-default", data-dismiss="modal") Close
+					input(type='submit', class='btn btn-info', value='Change')
+
+	script(type='text/javascript').
+		_USERSET = 0;
+		function setUser(id){
+			_USERSET = id;
+		}
+		function changPass(password, cf_password){
+			if(password != cf_password){
+				Notification.show("Password wrong");
+			}
+			else if(password.length <= 0){
+				Notification.show("Password wrong");
+			}
+			else{
+				window.location.href = "?user="+_USERSET+"&password="+password;
+			}
+		}

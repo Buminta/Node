@@ -1,0 +1,19 @@
+extends layout_admin
+
+block header
+
+block content
+	div(class='center-border')
+		table(class='table table-striped thumbnail table-center')
+			thead
+				tr()
+					th() Username
+					th() Message
+					th() Control
+			tbody
+				- for(var i=0; i<list.length; i++)
+					tr()
+						td() #{list[i].username}
+						td(style='color: #{list[i].msg.color}; font-weight: #{list[i].msg.style};') #{list[i].msg.msg}
+						td()
+							button(class='btn btn-default' onclick='javascript:if(confirm("Delete confirm?")) window.location.href="?delete_msg=#{room}_#{i}";') Delete

@@ -157,3 +157,27 @@
 .box-chat .msg-content .btn{
     width: 15%; height: 80px; vertical-align: top;
 }
+
+.table-center{
+    margin: 0 auto;
+    width: auto;
+    display: inline-block;
+    text-align: left;
+}
+.table-center tbody tr td{
+    vertical-align: middle;
+}
+.center-border{
+    text-align: center;
+}
+.center-block-menu{
+    display: inline-block;
+    margin: 0 auto;
+}
+input.space{
+    margin-top: 10px;
+}
+.form-room{
+    width: 100%;
+    margin: 10px auto;
+}

@@ -51,7 +51,20 @@ module.exports = Model.extend({
 			
 		}
 	},
-	deleteRoom: function(id){
-		
+	updateRoom: function(room, msgs){
+		try{
+			var ObjectId = require('mongoose').Types.ObjectId;
+			var collection = this.getData();
+			collection.update({_id:  new ObjectId(room)},{$set:{msgs: msgs}},function(err, results){
+			});
+		}
+		catch(err){
+			
+		}
+	},
+	deleteRoom: function(id){	
+		var collection = this.getData();
+		var ObjectId = require('mongoose').Types.ObjectId;
+		return collection.remove({_id: new ObjectId(id)});
 	}
 });

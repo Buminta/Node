@@ -3,4 +3,21 @@ extends layout_admin
 block header
 
 block content
-	
+	div(class='center-border')
+		form(class='thumbnail form-room')
+			input(class='form-control', name='new_room')
+			input(class='btn btn-info space pull-right', type='submit', value='Create room')
+		table(class='table table-striped thumbnail table-center')
+			thead
+				tr()
+					th() Name
+					th() Messages count
+					th() Control
+			tbody
+				- for(var i=0; i<list.length; i++)
+					tr()
+						td() #{list[i].name}
+						td() #{list[i].msgs.length}
+						td()
+							button(class='btn btn-default' onclick='javascript:window.location.href="?manager=#{list[i]._id}";') Messages
+							button(class='btn btn-default' onclick='javascript:if(confirm("Delete confirm?")) window.location.href="?delete=#{list[i]._id}";') Delete
