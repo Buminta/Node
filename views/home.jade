@@ -4,6 +4,11 @@ block header
 	script(src='/socket.io/socket.io.js')
 	script(src='/js/chat.js')
 block content
+	div(class='thumbnail')
+		span
+			b Username:
+			span  #{username}
+		a(class='pull-right' href='/logout') Logout
 	div(class='center-block box-chat')
 		div(class='thumbnail room')
 			div(class='form-control' id='content')

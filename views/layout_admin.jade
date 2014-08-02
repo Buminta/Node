@@ -16,6 +16,9 @@ html(lang="en")
 						- for(var i=0; i<menu.length; i++)
 							li
 								a(href='/#{menu[i].controller}/#{menu[i].action}') #{menu[i].name}
+					ul(class='nav navbar-nav pull-right')
+						li
+							a(href='/logout') Logout
 		div(id="NotificationJS", style="display: none;")
 		block content
 

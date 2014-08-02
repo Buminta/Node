@@ -6,7 +6,7 @@ Auth = Class.extend({
 	},
 	permission: function(controller, action, callback){
 		var _self = this;
-		if(!this.req.session.loginID) return this.res.redirect("/login?goback=/"+this.req.params.controller+"/"+this.req.params.action);
+		if(!this.req.session.loginID) return this.res.redirect("/login?goback=/"+this.req.params.controller+"/"+(this.req.params.action?this.req.params.action:""));
 		return this.getPermission(controller, action, function(results){
 			return callback(results);
 		});
